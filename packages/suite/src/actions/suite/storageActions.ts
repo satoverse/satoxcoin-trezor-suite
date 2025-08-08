@@ -18,6 +18,7 @@ import {
 import { cloneObject } from '@trezor/utils';
 
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
+import { selectSuiteSettings } from 'src/selectors/suite/suiteSelectors';
 import { db } from 'src/storage';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import type { AppState, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
@@ -27,7 +28,6 @@ import { serializeCoinjoinAccount, serializeDevice } from 'src/utils/suite/stora
 import { deviceGraphDataFilterFn } from 'src/utils/wallet/graph';
 
 import { STORAGE } from './constants';
-import { selectSuiteSettings } from '../../reducers/suite/suiteReducer';
 import { DesktopBluetoothDevice } from '../bluetooth/DesktopBluetoothDevice';
 
 export type StorageAction = NonNullable<PreloadStoreAction>;
@@ -97,6 +97,8 @@ const removeCoinjoinRelatedSetting = (state: AppState) => {
             flags: state.suite.flags,
             evmSettings: state.suite.evmSettings,
             dismissedTradingTerms: state.suite.dismissedTradingTerms,
+            seenDisconnectNotificationForDeviceIds:
+                state.suite.seenDisconnectNotificationForDeviceIds,
         },
         'suite',
         true,
@@ -385,6 +387,7 @@ export const saveSuiteSettings = () => async (_dispatch: Dispatch, getState: Get
             flags: suite.flags,
             evmSettings: suite.evmSettings,
             dismissedTradingTerms: suite.dismissedTradingTerms,
+            seenDisconnectNotificationForDeviceIds: suite.seenDisconnectNotificationForDeviceIds,
         },
         'suite',
         true,

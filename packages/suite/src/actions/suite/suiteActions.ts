@@ -11,12 +11,8 @@ import { HandshakeElectron, desktopApi } from '@trezor/suite-desktop-api';
 import * as modalActions from 'src/actions/suite/modalActions';
 import type { TranslationKey } from 'src/components/suite/Translation';
 import { ExperimentalFeature } from 'src/constants/suite/experimental';
-import {
-    AutodetectSettings,
-    DebugModeOptions,
-    EvmSettings,
-    selectTorState,
-} from 'src/reducers/suite/suiteReducer';
+import { AutodetectSettings, DebugModeOptions, EvmSettings } from 'src/reducers/suite/suiteReducer';
+import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { TorStatus } from 'src/types/suite';
 import type { AppState, Dispatch, GetState, TorBootstrap } from 'src/types/suite';
 import { isOnionUrl } from 'src/utils/suite/tor';
@@ -54,6 +50,10 @@ export type SuiteAction =
     | {
           type: typeof SUITE.SET_RECENTLY_DISCONNECTED_DEVICE;
           payload: string | null;
+      }
+    | {
+          type: typeof SUITE.ADD_DEVICE_ID_TO_SEEN_DISCONNECT_NOTIFICATION;
+          payload: { deviceId: string };
       }
     | {
           type: typeof SUITE.EVM_CONFIRM_EXPLANATION_MODAL;
@@ -150,6 +150,10 @@ export const setFlag = (key: keyof AppState['suite']['flags'], value: boolean): 
 export const setRecentlyDisconnectedDevice = (payload: string | null): SuiteAction => ({
     type: SUITE.SET_RECENTLY_DISCONNECTED_DEVICE,
     payload,
+});
+export const addDeviceIdToSeenDisconnectNotification = (deviceId: string): SuiteAction => ({
+    type: SUITE.ADD_DEVICE_ID_TO_SEEN_DISCONNECT_NOTIFICATION,
+    payload: { deviceId },
 });
 
 export const initialRunCompleted = () => (dispatch: Dispatch, getState: GetState) => {

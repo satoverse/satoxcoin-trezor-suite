@@ -37,7 +37,8 @@ import {
     TrezorLink,
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsCopyAddressModalShown } from 'src/reducers/suite/suiteReducer';
+import { selectIsCopyAddressModalShown } from 'src/selectors/suite/suiteSelectors';
+import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
 import { DropdownRow } from '../../tokens/DropdownRow';
 import { BlurUrls } from '../../tokens/common/BlurUrls';
@@ -97,10 +98,11 @@ const NftsRow = ({
                                         <InfoItem
                                             typographyStyle="label"
                                             label={
-                                                <>
-                                                    <Translation id="TR_CONTRACT_ADDRESS" />
-                                                    {': '}
-                                                </>
+                                                <Translation
+                                                    id={getTokenAddressTranslationId(
+                                                        network.networkType,
+                                                    )}
+                                                />
                                             }
                                             gap={spacings.zero}
                                         >

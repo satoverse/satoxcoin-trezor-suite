@@ -9,9 +9,9 @@ export const exchangeInvity: ExchangeProviderInfo = {
     sellTickers: ['bitcoin', 'ethereum', 'eos'] as CryptoId[],
     statusUrl: 'https://checkout.invity.io/#status/{{paymentId}}',
     supportUrl: 'https://invity.io/invest-crypto',
-    isDex: false,
+    isDex: true,
     isFixedRate: true,
-    kycPolicyType: 'noKYC',
+    kycPolicyType: 'DEX',
     addressFormats: {},
 };
 
@@ -41,6 +41,6 @@ export const exchangeCexdirect: ExchangeProviderInfo = {
     supportUrl: 'https://cexdirect.io/#support',
     isDex: false,
     isFixedRate: false,
-    kycPolicyType: 'noKYC',
+    kycPolicyType: 'KYC-required',
     addressFormats: {},
 };

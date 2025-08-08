@@ -3,6 +3,7 @@ import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';
+import { AccountItemType } from 'src/types/wallet';
 import { getTokens } from 'src/utils/wallet/tokenUtils';
 
 import { AccountItem } from './AccountItem/AccountItem';
@@ -10,11 +11,19 @@ import { AccountItemsGroup } from './AccountItemsGroup';
 
 interface AccountSectionProps {
     account: Account;
+    forceOnlyItemClick?: boolean;
+    hideStaking?: boolean;
     selected: boolean;
-    onItemClick?: () => void;
+    onItemClick?: (account: Account, type: AccountItemType) => void;
 }
 
-export const AccountSection = ({ account, selected, onItemClick }: AccountSectionProps) => {
+export const AccountSection = ({
+    account,
+    forceOnlyItemClick,
+    hideStaking,
+    selected,
+    onItemClick,
+}: AccountSectionProps) => {
     const {
         symbol,
         accountType,
@@ -29,7 +38,10 @@ export const AccountSection = ({ account, selected, onItemClick }: AccountSectio
 
     const showGroup = ['ethereum', 'solana', 'cardano'].includes(networkType);
 
-    const isStakeShown = useSelector(state => selectAccountIsStakingActive(state, account.key));
+    const isStakeShownStored = useSelector(state =>
+        selectAccountIsStakingActive(state, account.key),
+    );
+    const isStakeShown = !hideStaking && isStakeShownStored;
 
     const tokens = getTokens({
         tokens: accountTokens,
@@ -42,6 +54,7 @@ export const AccountSection = ({ account, selected, onItemClick }: AccountSectio
     return showGroup && (isStakeShown || tokens.shownWithBalance.length) ? (
         <AccountItemsGroup
             key={`${descriptor}-${symbol}`}
+            forceOnlyItemClick={forceOnlyItemClick}
             account={{
                 ...account,
                 accountLabel: account.accountLabel,
@@ -50,11 +63,13 @@ export const AccountSection = ({ account, selected, onItemClick }: AccountSectio
             showStaking={isStakeShown}
             tokens={tokens.shownWithBalance}
             dataTestKey={dataTestKey}
+            onItemClick={onItemClick}
         />
     ) : (
         <AccountItem
             type="coin"
             key={`${descriptor}-${symbol}`}
+            forceOnlyItemClick={forceOnlyItemClick}
             account={{
                 ...account,
                 accountLabel: account.accountLabel,

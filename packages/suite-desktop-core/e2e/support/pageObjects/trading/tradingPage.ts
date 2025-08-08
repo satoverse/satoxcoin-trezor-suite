@@ -236,8 +236,10 @@ export class TradingPage {
         if (currentCurrency === currencyCode.toUpperCase()) {
             return;
         }
-        await this.youPayCurrencyDropdown.click();
-        await this.youPayCurrencyOption(currencyCode).click();
+        await this.page.selectDropdownOptionWithRetry(
+            this.youPayCurrencyDropdown,
+            this.youPayCurrencyOption(currencyCode),
+        );
     }
 
     @step()
@@ -245,6 +247,8 @@ export class TradingPage {
         await this.accountDropdown.click();
         if (isAccountTabFilter(symbol)) {
             await this.accountTabFilter(symbol).click();
+        } else {
+            await this.accountTabFilter('all-networks').click();
         }
         await this.accountSearchInput.fill(cryptoName);
         await this.accountOption(cryptoName, symbol).click();
@@ -266,12 +270,17 @@ export class TradingPage {
     ) {
         const inputField = wantCrypto ? this.youPayCryptoInput : this.youPayFiatInput;
         await expect(inputField).not.toHaveValue('');
+        if (wantCrypto) {
+            // The desired value is already set due to sideeffect of mocked response,
+            // We clear it so we can intercept and verify request payload that is triggered by filling value.
+            await inputField.fill('');
+        }
         await this.selectCountryOfResidence(country);
         await this.selectFiatCurrency(fiatCurrencyCode);
         const quotesRequestPromise = this.page.waitForRequest(invityEndpoint.buyQuotes);
         const quotesResponsePromise = this.page.waitForResponse(invityEndpoint.buyQuotes);
         await inputField.fill(amount);
-        await expect(quotesRequestPromise).toHavePayload({
+        await expect.soft(quotesRequestPromise).toHavePayload({
             wantCrypto,
             fiatCurrency: fiatCurrencyCode.toUpperCase(),
             receiveCurrency: cryptoCurrency,
@@ -291,13 +300,14 @@ export class TradingPage {
         country: TradingCountryCode = 'CZ',
     ) {
         await this.selectCountryOfResidence(country);
+        await this.selectFiatCurrency(fiatCurrencyCode);
         const quoteRequestPromise = this.page.waitForRequest(invityEndpoint.sellQuotes);
         await this.youPayCryptoInput.fill(amount);
         await expect(
             this.page.getByText(messages['AMOUNT_IS_NOT_ENOUGH'].defaultMessage),
             'Insufficient funds in the account to run sell flow test. Please contact the "tech_qa" Slack group immediately.',
         ).toBeHidden();
-        await expect(quoteRequestPromise).toHavePayload({
+        await expect.soft(quoteRequestPromise).toHavePayload({
             amountInCrypto: true,
             cryptoCurrency,
             fiatCurrency: fiatCurrencyCode.toUpperCase(),
@@ -346,7 +356,7 @@ export class TradingPage {
         const quotesResponsePromise = this.page.waitForResponse(invityEndpoint.swapQuotes);
         await expect(this.bestOfferAmount).toHaveText(/0 \w+/);
         await this.youPayCryptoInput.fill(params.amount);
-        await expect(quotesRequestPromise).toHavePayload({
+        await expect.soft(quotesRequestPromise).toHavePayload({
             receive: params.receiveNetwork,
             send: params.sendCurrency,
             sendStringAmount: params.amount,

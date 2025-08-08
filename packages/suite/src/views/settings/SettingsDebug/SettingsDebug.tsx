@@ -5,12 +5,13 @@ import { SettingsLayout, SettingsSection } from 'src/components/settings';
 import { Translation } from 'src/components/suite';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useSelector } from 'src/hooks/suite';
-import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
+import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 import { Backends } from './Backends';
 import { Bluetooth } from './Bluetooth';
 import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
 import { CoinjoinApi } from './CoinjoinApi';
+import { ConnectPopup } from './ConnectPopup';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { Devkit } from './Devkit';
 import { GithubIssue } from './GithubIssue';
@@ -27,6 +28,7 @@ import { Transport } from './Transport';
 import { TransportBackends } from './TransportBackends';
 import { TrezorConnectLogs } from './TrezorConnectLogs';
 import { TriggerHighlight } from './TriggerHighlight';
+import { TriggerToast } from './TriggerToast';
 import { WipeData } from './WipeData';
 
 export const SettingsDebug = () => {
@@ -40,6 +42,7 @@ export const SettingsDebug = () => {
                 <GithubIssue />
                 {!isWeb() && <WipeData />}
                 <TriggerHighlight />
+                <TriggerToast />
             </SettingsSection>
             <SettingsSection title="Invity">
                 <InvityApi />
@@ -94,6 +97,7 @@ export const SettingsDebug = () => {
             </SettingsSection>
             <SettingsSection title="TrezorConnect">
                 <TrezorConnectLogs />
+                {isDesktop() && <ConnectPopup />}
             </SettingsSection>
         </SettingsLayout>
     );

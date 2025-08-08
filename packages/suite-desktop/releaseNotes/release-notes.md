@@ -1,17 +1,17 @@
 ### 🚀 New features
 
-- Stellar (XLM) support is now available to all users, moving from experimental to fully integrated and accessible via the Coins menu.
-- Solana address validation has been introduced, warning users when sending to system-derived token or staking addresses for added clarity and security.
+- Bitcoin can now be set as the primary currency unit, offering greater control over how values are displayed.
+- “View-only” wallets are now enabled by default, making it easier to monitor balances without connecting your device.
+- Biometric authentication with auto-lock has been added to experimental features, enhancing both security and convenience.
+- WalletConnect is now officially supported—securely connect your Trezor to dApps, with transaction simulations included for added transparency.
+- Trezor Connect has graduated from experimental—seamlessly link your Trezor to supported apps via a secure Trezor Suite interface (availability depends on third-party wallet support).
 
 ### 🎨 Improvements
 
-- The passphrase wallet flow has been refined with clearer guidance when opening existing wallets or creating new ones, improving user confidence and understanding.
-- Account discovery speed has been boosted by up to 50%, offering a noticeably faster and more responsive experience.
-- Transaction history navigation has been improved with smoother pagination, making it easier to browse past transactions.
-- The trading interface has been polished with updated modal headers and a restructured swap flow that moves DEX approvals to the start for better usability.
-- Fee rate updates now occur every minute, ensuring more accurate estimates when sending transactions.
-- WalletConnect transaction previews are now shown before confirmation, adding transparency to EVM-based transactions.
-- EIP-712 messages and 1inch Fusion swap details have been made easier to read, enhancing clarity during the signing process.
+- The minimum Bitcoin fee rate has been reduced to 0.1 sat/vB, allowing for more cost-effective transaction options.
+- The "Speed up" transaction feature has been improved for better performance and reliability.
+- Locktime functionality has been enhanced for increased precision in transaction timing.
+- Send options have been streamlined—Locktime and Broadcast settings are now neatly organized under Advanced Send.
 
 ### 🔧 Bug fixes
 

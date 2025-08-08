@@ -17,8 +17,8 @@ import { goto } from 'src/actions/suite/routerActions';
 import { CoinList, Translation } from 'src/components/suite';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { selectIsPublic } from 'src/reducers/wallet/coinjoinReducer';
+import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { TrezorDevice } from 'src/types/suite';
 import { Account } from 'src/types/wallet';
 
@@ -39,6 +39,7 @@ interface AddAccountProps {
     noRedirect?: boolean;
     isCoinjoinDisabled?: boolean;
     isBackClickDisabled?: boolean;
+    onAddAccount?: (account: Account) => void;
 }
 
 export const AddAccountModal = ({
@@ -46,6 +47,7 @@ export const AddAccountModal = ({
     onCancel,
     symbol,
     noRedirect,
+    onAddAccount,
     isCoinjoinDisabled,
     isBackClickDisabled,
 }: AddAccountProps) => {
@@ -177,6 +179,7 @@ export const AddAccountModal = ({
     const addAccount = (account: Account) => {
         onCancel();
         dispatch(accountsActions.changeAccountVisibility(account));
+        onAddAccount?.(account);
         if (app === 'wallet' && !noRedirect) {
             // redirect to account only if added from "wallet" app
             dispatch(
@@ -194,6 +197,10 @@ export const AddAccountModal = ({
     const getStepConfig = () => {
         const isAccountTypeSelectionStep =
             !!selectedNetwork && accountTypes && accountTypes.length > 1;
+
+        const isAccountActivated =
+            preselectedNetwork &&
+            enabledNetworks.some(enabledNetwork => enabledNetwork.symbol === symbol);
 
         return isAccountTypeSelectionStep
             ? {
@@ -233,7 +240,13 @@ export const AddAccountModal = ({
                                   />
                               )}
                               <SelectNetwork
-                                  heading={<Translation id="TR_INACTIVE_COINS" />}
+                                  heading={
+                                      isAccountActivated ? (
+                                          <Translation id="TR_ACTIVATED_COINS" />
+                                      ) : (
+                                          <Translation id="TR_INACTIVE_COINS" />
+                                      )
+                                  }
                                   networks={symbol ? visibleNetworks : disabledMainnetNetworks}
                                   selectedNetworks={selectedNetworks}
                                   handleNetworkSelection={selectNetwork}
